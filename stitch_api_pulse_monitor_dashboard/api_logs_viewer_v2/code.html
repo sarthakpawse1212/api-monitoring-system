@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Developer Logs | Pulse Monitor Pro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pulse-error {
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #E2E8F0;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "on-background": "#0b1c30",
+                        "inverse-surface": "#213145",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-secondary-fixed-variant": "#004395",
+                        "on-tertiary-container": "#98805d",
+                        "tertiary": "#000000",
+                        "surface-dim": "#cbdbf5",
+                        "on-tertiary": "#ffffff",
+                        "secondary-container": "#5b94fd",
+                        "secondary": "#085ac0",
+                        "on-surface": "#0b1c30",
+                        "success-emerald": "#10b981",
+                        "surface-container": "#e5eeff",
+                        "surface-container-lowest": "#ffffff",
+                        "warning-orange": "#f97316",
+                        "outline-variant": "#c6c6cd",
+                        "primary-container": "#131b2e",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "primary-fixed": "#dae2fd",
+                        "on-secondary-fixed": "#001a42",
+                        "on-error": "#ffffff",
+                        "error-red": "#ba1a1a",
+                        "inverse-primary": "#bec6e0",
+                        "surface-variant": "#d3e4fe",
+                        "on-tertiary-fixed": "#271901",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#574425",
+                        "on-primary-fixed": "#131b2e",
+                        "surface-card": "#ffffff",
+                        "surface-tint": "#565e74",
+                        "outline": "#76777d",
+                        "on-surface-variant": "#45464d",
+                        "tertiary-container": "#271901",
+                        "surface-container-high": "#dce9ff",
+                        "on-secondary-container": "#002c66",
+                        "secondary-fixed": "#d8e2ff",
+                        "background": "#f8f9ff",
+                        "primary": "#000000",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-bright": "#f8f9ff",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#bec6e0",
+                        "tertiary-fixed-dim": "#dec29a",
+                        "surface": "#f8f9ff",
+                        "border-subtle": "#E2E8F0",
+                        "surface-container-low": "#eff4ff",
+                        "on-primary-container": "#7c839b",
+                        "tertiary-fixed": "#fcdeb5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "container-max": "1440px",
+                        "xl": "32px",
+                        "lg": "24px",
+                        "sidebar-width": "260px",
+                        "md": "16px",
+                        "base": "4px",
+                        "sm": "8px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "display-lg-mobile": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "code-sm": ["JetBrains Mono"],
+                        "body-base": ["Inter"],
+                        "label-caps": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg-mobile": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "code-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-base": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background font-body-base text-on-surface">
+<!-- TopNavBar Component -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-lg h-16 bg-surface-container-lowest border-b border-outline-variant shadow-sm">
+<div class="flex items-center gap-md">
+<span class="text-headline-md font-headline-md font-bold text-on-background">Pulse Monitor Pro</span>
+</div>
+<nav class="hidden md:flex items-center gap-xl h-full">
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-200" href="#">Dashboard</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-200" href="#">APIs</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-200" href="#">Incidents</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-200" href="#">Alerts</a>
+<a class="text-secondary font-bold border-b-2 border-secondary pb-1 transition-all" href="#">Settings</a>
+</nav>
+<div class="flex items-center gap-md">
+<button class="p-sm hover:bg-surface-container-low rounded-full transition-colors active:scale-95 active:opacity-80">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+</button>
+<button class="p-sm hover:bg-surface-container-low rounded-full transition-colors active:scale-95 active:opacity-80">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="help">help</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-primary-fixed flex items-center justify-center overflow-hidden border border-outline-variant">
+<img alt="User avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_MIO-wTbhKNWqgM4EoS0WX8rlGE23jpygIO9iUAVabX6nw6COZazscxIvSDL3B4rzfOb4IUzNvHpJjfFpJ8EodSAz6H3U8bFGIlMXD-dwIcgQ45ykrZYE4GnbFExOBkFL0Qrjf00tZkrdBbmC2G_bCpQTqQLi4_6MX_jgDaR3F5VP9C_zG_y4-cuEfBFrQMBaLups3TPcidXZc_HKIIeYH9Hj_7pJFkCIoocxxdd8OirAVoNxdRrlsxePgNs8gq2rq2zsqq-tL85Y"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar Component -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] w-sidebar-width bg-surface-container-low border-r border-outline-variant flex flex-col py-lg px-md gap-xs">
+<div class="mb-lg flex items-center gap-sm">
+<div class="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-on-secondary">
+<span class="material-symbols-outlined" data-icon="monitor_heart">monitor_heart</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md font-bold text-on-background leading-tight">System Health</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">All systems operational</p>
+</div>
+</div>
+<nav class="flex flex-col gap-xs flex-1">
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-container-highest transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-body-sm font-body-sm">Overview</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-container-highest transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="monitor_heart">monitor_heart</span>
+<span class="text-body-sm font-body-sm">API Monitoring</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-container-highest transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="swap_horiz">swap_horiz</span>
+<span class="text-body-sm font-body-sm">Transactions</span>
+</a>
+<a class="flex items-center gap-sm bg-secondary-container text-on-secondary-container rounded-xl px-md py-sm translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="text-body-sm font-body-sm font-bold">Logs</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-container-highest transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="text-body-sm font-body-sm">Analytics</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-container-highest transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-body-sm font-body-sm">Settings</span>
+</a>
+</nav>
+<button class="mt-auto bg-secondary text-on-secondary px-md py-sm rounded-xl font-bold flex items-center justify-center gap-sm hover:opacity-90 transition-opacity active:scale-95">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+            New Monitor
+        </button>
+</aside>
+<!-- Main Content -->
+<main class="ml-[260px] mt-16 p-lg bg-background min-h-screen">
+<div class="max-w-container-max mx-auto space-y-lg">
+<!-- Page Header & Filters -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md shadow-sm">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-md mb-md">
+<div>
+<h1 class="font-display-lg text-display-lg text-on-surface">Developer Logs</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Real-time observability and trace data across all active endpoints.</p>
+</div>
+<div class="flex items-center gap-sm">
+<button class="bg-surface-container-high text-on-surface-variant px-md py-sm rounded border border-outline-variant font-body-sm flex items-center gap-xs hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="file_download">file_download</span>
+                            Export CSV
+                        </button>
+<button class="bg-secondary text-on-secondary px-md py-sm rounded font-body-sm flex items-center gap-xs hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[20px]" data-icon="refresh">refresh</span>
+                            Live Feed
+                        </button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-md">
+<!-- Search -->
+<div>
+<label class="text-label-caps font-label-caps text-on-surface-variant mb-base block uppercase">Search Logs</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant opacity-60 text-[20px]" data-icon="search">search</span>
+<input class="w-full bg-surface border border-outline-variant rounded-lg pl-xl pr-sm py-sm font-body-sm focus:outline-none focus:ring-1 focus:ring-secondary-container" placeholder="Trace ID, Message..." type="text"/>
+</div>
+</div>
+<!-- Service -->
+<div>
+<label class="text-label-caps font-label-caps text-on-surface-variant mb-base block uppercase">Service/API</label>
+<select class="w-full bg-surface border border-outline-variant rounded-lg px-sm py-sm font-body-sm focus:outline-none focus:ring-1 focus:ring-secondary-container appearance-none">
+<option>All Services</option>
+<option>Auth Gateway</option>
+<option>Billing Processor</option>
+<option>User Store v3</option>
+</select>
+</div>
+<!-- Status -->
+<div>
+<label class="text-label-caps font-label-caps text-on-surface-variant mb-base block uppercase">Status Code</label>
+<div class="flex gap-xs">
+<button class="flex-1 bg-surface-container-high text-on-surface-variant rounded border border-outline-variant py-sm text-[11px] font-bold hover:bg-secondary-container hover:text-on-secondary-container transition-all">2xx</button>
+<button class="flex-1 bg-surface-container-high text-on-surface-variant rounded border border-outline-variant py-sm text-[11px] font-bold hover:bg-secondary-container hover:text-on-secondary-container transition-all">4xx</button>
+<button class="flex-1 bg-surface-container-high text-on-surface-variant rounded border border-outline-variant py-sm text-[11px] font-bold hover:bg-secondary-container hover:text-on-secondary-container transition-all">5xx</button>
+</div>
+</div>
+<!-- Time Range -->
+<div>
+<label class="text-label-caps font-label-caps text-on-surface-variant mb-base block uppercase">Time Range</label>
+<div class="flex items-center bg-surface border border-outline-variant rounded-lg px-sm py-sm gap-sm">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant" data-icon="calendar_today">calendar_today</span>
+<span class="font-body-sm text-body-sm flex-1 truncate">Last 24 Hours</span>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Table Section -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col">
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full border-collapse separate text-left">
+<thead class="bg-surface-container-low border-b border-outline-variant">
+<tr>
+<th class="px-md py-sm text-label-caps font-label-caps text-on-surface-variant uppercase">Timestamp</th>
+<th class="px-md py-sm text-label-caps font-label-caps text-on-surface-variant uppercase">API Endpoint</th>
+<th class="px-md py-sm text-label-caps font-label-caps text-on-surface-variant uppercase">Log Message</th>
+<th class="px-md py-sm text-label-caps font-label-caps text-on-surface-variant uppercase text-center">Status</th>
+<th class="px-md py-sm text-label-caps font-label-caps text-on-surface-variant uppercase text-right">Latency</th>
+</tr>
+</thead>
+<tbody class="font-body-sm divide-y divide-outline-variant/30">
+<!-- Success Row -->
+<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
+<td class="px-md py-sm whitespace-nowrap font-code-sm text-code-sm text-on-surface-variant">2023-11-20 14:32:11.042</td>
+<td class="px-md py-sm font-code-sm text-code-sm text-secondary font-bold">GET /api/v1/user/profile</td>
+<td class="px-md py-sm font-code-sm text-code-sm text-on-surface truncate max-w-md">Successfully retrieved user profile for UID: 84291-BA.</td>
+<td class="px-md py-sm text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-success-emerald/10 text-success-emerald border border-success-emerald/20">
+<span class="w-1.5 h-1.5 rounded-full bg-success-emerald mr-1.5"></span>
+                                        200 OK
+                                    </span>
+</td>
+<td class="px-md py-sm text-right font-code-sm text-code-sm text-on-surface-variant">42ms</td>
+</tr>
+<!-- Error Row -->
+<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer bg-error/5">
+<td class="px-md py-sm whitespace-nowrap font-code-sm text-code-sm text-on-surface-variant">2023-11-20 14:32:09.115</td>
+<td class="px-md py-sm font-code-sm text-code-sm text-secondary font-bold">POST /api/v1/auth/login</td>
+<td class="px-md py-sm font-code-sm text-code-sm text-error font-semibold truncate max-w-md">Authentication failure. Invalid credential set.</td>
+<td class="px-md py-sm text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-error-container text-on-error-container border border-error/20">
+<span class="w-1.5 h-1.5 rounded-full bg-error mr-1.5 pulse-error"></span>
+                                        401 UNAUTHORIZED
+                                    </span>
+</td>
+<td class="px-md py-sm text-right font-code-sm text-code-sm text-on-surface-variant">118ms</td>
+</tr>
+<!-- Critical Error -->
+<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer bg-error/10">
+<td class="px-md py-sm whitespace-nowrap font-code-sm text-code-sm text-on-surface-variant">2023-11-20 14:31:42.004</td>
+<td class="px-md py-sm font-code-sm text-code-sm text-secondary font-bold">GET /api/internal/health</td>
+<td class="px-md py-sm font-code-sm text-code-sm text-error font-bold truncate max-w-md">CRITICAL: Connection pool exhausted.</td>
+<td class="px-md py-sm text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-error text-on-error border border-error">
+<span class="w-2 h-2 rounded-full bg-on-error mr-1.5 pulse-error"></span>
+                                        503 UNAVAILABLE
+                                    </span>
+</td>
+<td class="px-md py-sm text-right font-code-sm text-code-sm text-error font-bold">5000ms</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="bg-surface-container-low p-md flex items-center justify-between border-t border-outline-variant">
+<div class="text-body-sm font-body-sm text-on-surface-variant">
+                        Showing <span class="font-bold text-on-surface">1 - 50</span> of 14,209 logs
+                    </div>
+<div class="flex items-center gap-sm">
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant bg-surface hover:bg-surface-container-high transition-colors disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-secondary text-on-secondary font-bold text-[12px]">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant bg-surface hover:bg-surface-container-high text-[12px]">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant bg-surface hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Stats Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md shadow-sm border-l-4 border-success-emerald">
+<div class="flex justify-between items-start mb-sm">
+<span class="text-label-caps font-label-caps text-on-surface-variant uppercase">Average Latency</span>
+<span class="material-symbols-outlined text-success-emerald text-[20px]" data-icon="speed">speed</span>
+</div>
+<div class="text-display-lg font-display-lg text-on-surface">142<span class="text-headline-md font-normal text-on-surface-variant ml-1">ms</span></div>
+<div class="text-[11px] font-bold text-success-emerald mt-base flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_down">trending_down</span>
+                        -12% from last hour
+                    </div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md shadow-sm border-l-4 border-error">
+<div class="flex justify-between items-start mb-sm">
+<span class="text-label-caps font-label-caps text-on-surface-variant uppercase">Error Rate (5xx)</span>
+<span class="material-symbols-outlined text-error text-[20px]" data-icon="report">report</span>
+</div>
+<div class="text-display-lg font-display-lg text-on-surface">0.42<span class="text-headline-md font-normal text-on-surface-variant ml-1">%</span></div>
+<div class="text-[11px] font-bold text-error mt-base flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span>
+                        +0.05% spike detected
+                    </div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md shadow-sm border-l-4 border-secondary">
+<div class="flex justify-between items-start mb-sm">
+<span class="text-label-caps font-label-caps text-on-surface-variant uppercase">Total Requests</span>
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="data_usage">data_usage</span>
+</div>
+<div class="text-display-lg font-display-lg text-on-surface">84.2<span class="text-headline-md font-normal text-on-surface-variant ml-1">k</span></div>
+<div class="text-[11px] font-bold text-on-surface-variant mt-base flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]" data-icon="query_stats">query_stats</span>
+                        Consistent with baseline
+                    </div>
+</div>
+</section>
+</div>
+</main>
+<script>
+        // Micro-interactions
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('click', () => {
+                console.log('Log entry selected');
+            });
+        });
+
+        const filterButtons = document.querySelectorAll('button[class*="text-[11px]"]');
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if(btn.classList.contains('bg-secondary-container')) {
+                    btn.classList.replace('bg-secondary-container', 'bg-surface-container-high');
+                    btn.classList.replace('text-on-secondary-container', 'text-on-surface-variant');
+                } else {
+                    btn.classList.replace('bg-surface-container-high', 'bg-secondary-container');
+                    btn.classList.replace('text-on-surface-variant', 'text-on-secondary-container');
+                }
+            });
+        });
+    </script>
+</body></html>

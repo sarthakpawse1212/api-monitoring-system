@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Customer API - Pulse Monitor Pro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error-container": "#93000a",
+                      "on-background": "#0b1c30",
+                      "inverse-surface": "#213145",
+                      "surface-container-highest": "#d3e4fe",
+                      "on-secondary-fixed-variant": "#004395",
+                      "on-tertiary-container": "#98805d",
+                      "tertiary": "#000000",
+                      "surface-dim": "#cbdbf5",
+                      "on-tertiary": "#ffffff",
+                      "secondary-container": "#5b94fd",
+                      "secondary": "#085ac0",
+                      "on-surface": "#0b1c30",
+                      "success-emerald": "#10b981",
+                      "surface-container": "#e5eeff",
+                      "surface-container-lowest": "#ffffff",
+                      "warning-orange": "#f97316",
+                      "outline-variant": "#c6c6cd",
+                      "primary-container": "#131b2e",
+                      "on-primary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "secondary-fixed-dim": "#adc6ff",
+                      "primary-fixed": "#dae2fd",
+                      "on-secondary-fixed": "#001a42",
+                      "on-error": "#ffffff",
+                      "error-red": "#ba1a1a",
+                      "inverse-primary": "#bec6e0",
+                      "surface-variant": "#d3e4fe",
+                      "on-tertiary-fixed": "#271901",
+                      "on-secondary": "#ffffff",
+                      "on-tertiary-fixed-variant": "#574425",
+                      "on-primary-fixed": "#131b2e",
+                      "surface-card": "#ffffff",
+                      "surface-tint": "#565e74",
+                      "outline": "#76777d",
+                      "on-surface-variant": "#45464d",
+                      "tertiary-container": "#271901",
+                      "surface-container-high": "#dce9ff",
+                      "on-secondary-container": "#002c66",
+                      "secondary-fixed": "#d8e2ff",
+                      "background": "#f8f9ff",
+                      "primary": "#000000",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "inverse-on-surface": "#eaf1ff",
+                      "surface-bright": "#f8f9ff",
+                      "error-container": "#ffdad6",
+                      "primary-fixed-dim": "#bec6e0",
+                      "tertiary-fixed-dim": "#dec29a",
+                      "surface": "#f8f9ff",
+                      "border-subtle": "#E2E8F0",
+                      "surface-container-low": "#eff4ff",
+                      "on-primary-container": "#7c839b",
+                      "tertiary-fixed": "#fcdeb5"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "container-max": "1440px",
+                      "xl": "32px",
+                      "lg": "24px",
+                      "sidebar-width": "260px",
+                      "md": "16px",
+                      "base": "4px",
+                      "sm": "8px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "display-lg-mobile": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "code-sm": ["JetBrains Mono"],
+                      "body-base": ["Inter"],
+                      "label-caps": ["Inter"]
+              },
+              "fontSize": {
+                      "display-lg-mobile": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "code-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "body-base": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body { background-color: #f8f9ff; }
+        .glass-card { background: #ffffff; border: 1px solid #c6c6cd; }
+        .pulse-emerald { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+        .bento-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+        @media (max-width: 1024px) { .bento-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 640px) { .bento-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body class="min-h-screen text-on-surface">
+<!-- TopNavBar Shared Component -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-lg h-16 bg-surface-container-lowest border-b border-outline-variant shadow-sm max-w-full">
+<div class="flex items-center gap-xl">
+<div class="flex items-center gap-sm">
+<span class="text-headline-md font-headline-md font-bold text-on-background">Pulse Monitor Pro</span>
+</div>
+<nav class="hidden lg:flex gap-lg items-center">
+<a class="text-body-base font-body-base text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Dashboard</a>
+<a class="text-body-base font-body-base text-secondary font-bold border-b-2 border-secondary pb-1" href="#">APIs</a>
+<a class="text-body-base font-body-base text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Incidents</a>
+<a class="text-body-base font-body-base text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Alerts</a>
+<a class="text-body-base font-body-base text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Settings</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-xs text-on-surface-variant hover:text-secondary transition-all active:scale-95 active:opacity-80">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-xs text-on-surface-variant hover:text-secondary transition-all active:scale-95 active:opacity-80">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant">
+<img alt="User avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkMoE__nAjd8WMdj_NHbOX9maSK_5kAATr10c9w4kMqKiUgHNkK_zLYjwv0HlB4dAVFd80aAX8FAMLW4p7x1yJ-2shDAMAuCBSpSc1Yuu000LxwL0e8rt4mr-ODm9ZstCSM09EZYP4jBUhvm-RdqGYse23UU8Ws87fh9PHe-J7rcBkKmP1t5k4QzLC4i59-4xiv8edsyT96ph_mYvKiMIBQkk4dOOTKQztKan2t2wQxo8QhXmVGbjarEdRIHwG6FHSrzRqPeonPXbK"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar Shared Component -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] w-sidebar-width bg-surface-container-low border-r border-outline-variant flex flex-col py-lg px-md gap-xs hidden md:flex z-40">
+<div class="flex items-center gap-sm px-md mb-md">
+<div class="w-8 h-8 rounded bg-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary text-[20px]">monitor_heart</span>
+</div>
+<div>
+<h3 class="text-label-caps font-label-caps font-bold">System Health</h3>
+<p class="text-[10px] text-success-emerald uppercase font-bold">Operational</p>
+</div>
+</div>
+<nav class="flex flex-col gap-xs">
+<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-container-highest px-md py-sm rounded transition-all duration-150" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-body-sm font-body-sm">Overview</span>
+</a>
+<a class="flex items-center gap-sm bg-secondary-container text-on-secondary-container rounded-xl px-md py-sm translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">monitor_heart</span>
+<span class="text-body-sm font-body-sm font-bold">API Monitoring</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-container-highest px-md py-sm rounded transition-all duration-150" href="#">
+<span class="material-symbols-outlined">swap_horiz</span>
+<span class="text-body-sm font-body-sm">Transactions</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-container-highest px-md py-sm rounded transition-all duration-150" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="text-body-sm font-body-sm">Logs</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-container-highest px-md py-sm rounded transition-all duration-150" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-body-sm font-body-sm">Analytics</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-container-highest px-md py-sm rounded transition-all duration-150" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-body-sm font-body-sm">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-md">
+<button class="w-full bg-secondary text-on-secondary py-sm rounded-lg text-body-sm font-bold flex items-center justify-center gap-xs transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]">add</span>
+            New Monitor
+        </button>
+</div>
+</aside>
+<main class="md:ml-sidebar-width mt-16 pb-xl min-h-[calc(100vh-64px)]">
+<div class="px-lg py-xl max-w-container-max mx-auto">
+<!-- API Header Card -->
+<section class="glass-card rounded-xl p-lg mb-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-lg">
+<div class="flex flex-col gap-xs">
+<div class="flex items-center gap-sm">
+<h2 class="text-headline-md font-headline-md">Customer API</h2>
+<div class="flex items-center gap-xs px-sm py-1 bg-emerald-100 text-emerald-800 rounded-full text-label-caps">
+<span class="w-2 h-2 bg-success-emerald rounded-full pulse-emerald"></span>
+                        Healthy
+                    </div>
+</div>
+<div class="flex items-center gap-md text-on-surface-variant text-code-sm font-code-sm">
+<span class="material-symbols-outlined text-[18px]">link</span>
+<span>https://api.example.com/v1/customers</span>
+</div>
+</div>
+<div class="flex flex-col md:items-end gap-xs">
+<p class="text-label-caps font-label-caps text-outline uppercase">Last Checked</p>
+<p class="text-body-base font-body-base font-semibold">2m ago</p>
+</div>
+</section>
+<!-- Metrics Bento Grid -->
+<div class="bento-grid mb-lg">
+<div class="glass-card rounded-xl p-lg border-l-4 border-success-emerald flex flex-col gap-md">
+<div class="flex justify-between items-center text-outline">
+<span class="text-label-caps font-label-caps uppercase">Availability</span>
+<span class="material-symbols-outlined text-success-emerald">check_circle</span>
+</div>
+<div class="text-display-lg font-display-lg">100%</div>
+<div class="text-body-sm font-body-sm text-success-emerald font-medium">No downtime in 30 days</div>
+</div>
+<div class="glass-card rounded-xl p-lg border-l-4 border-secondary flex flex-col gap-md">
+<div class="flex justify-between items-center text-outline">
+<span class="text-label-caps font-label-caps uppercase">Avg Response Time</span>
+<span class="material-symbols-outlined text-secondary">speed</span>
+</div>
+<div class="text-display-lg font-display-lg">180ms</div>
+<div class="text-body-sm font-body-sm text-secondary font-medium">Stable latency trend</div>
+</div>
+<div class="glass-card rounded-xl p-lg border-l-4 border-on-primary-container flex flex-col gap-md">
+<div class="flex justify-between items-center text-outline">
+<span class="text-label-caps font-label-caps uppercase">Requests Today</span>
+<span class="material-symbols-outlined text-on-primary-container">lan</span>
+</div>
+<div class="text-display-lg font-display-lg">450k</div>
+<div class="text-body-sm font-body-sm text-on-primary-container font-medium">↑ 12% from yesterday</div>
+</div>
+<div class="glass-card rounded-xl p-lg border-l-4 border-error flex flex-col gap-md">
+<div class="flex justify-between items-center text-outline">
+<span class="text-label-caps font-label-caps uppercase">Error Count</span>
+<span class="material-symbols-outlined text-error">error_outline</span>
+</div>
+<div class="text-display-lg font-display-lg">12</div>
+<div class="text-body-sm font-body-sm text-error font-medium">Critical threshold: 50</div>
+</div>
+</div>
+<!-- Charts Section -->
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-lg mb-lg">
+<!-- Response Time Trend -->
+<div class="glass-card rounded-xl p-lg flex flex-col gap-lg min-h-[360px]">
+<div class="flex justify-between items-center">
+<h3 class="text-headline-md font-headline-md text-[18px]">Response Time Trend</h3>
+<div class="flex gap-xs">
+<button class="px-sm py-1 bg-surface-container-low border border-outline-variant rounded text-label-caps font-label-caps">1H</button>
+<button class="px-sm py-1 bg-on-background text-on-primary rounded text-label-caps font-label-caps">24H</button>
+</div>
+</div>
+<div class="relative flex-1 bg-surface-container-low rounded-lg flex items-end px-md py-sm overflow-hidden border border-outline-variant">
+<div class="w-full h-48 flex items-end gap-1">
+<div class="flex-1 bg-secondary rounded-t-sm opacity-60 hover:opacity-100 transition-opacity" style="height: 40%"></div>
+<div class="flex-1 bg-secondary rounded-t-sm opacity-60 hover:opacity-100 transition-opacity" style="height: 45%"></div>
+<div class="flex-1 bg-secondary rounded-t-sm opacity-60 hover:opacity-100 transition-opacity" style="height: 42%"></div>
+<div class="flex-1 bg-secondary rounded-t-sm opacity-60 hover:opacity-100 transition-opacity" style="height: 38%"></div>
+<div class="flex-1 bg-secondary rounded-t-sm opacity-60 hover:opacity-100 transition-opacity" style="height: 55%"></div>
+<div class="flex-1 bg-secondary rounded-t-sm opacity-60 hover:opacity-100 transition-opacity" style="height: 48%"></div>
+<div class="flex-1 bg-secondary rounded-t-sm opacity-60 hover:opacity-100 transition-opacity" style="height: 50%"></div>
+<div class="flex-1 bg-secondary rounded-t-sm opacity-60 hover:opacity-100 transition-opacity" style="height: 62%"></div>
+<div class="flex-1 bg-secondary rounded-t-sm opacity-60 hover:opacity-100 transition-opacity" style="height: 45%"></div>
+<div class="flex-1 bg-secondary rounded-t-sm opacity-60 hover:opacity-100 transition-opacity" style="height: 35%"></div>
+<div class="flex-1 bg-secondary rounded-t-sm opacity-60 hover:opacity-100 transition-opacity" style="height: 30%"></div>
+<div class="flex-1 bg-secondary rounded-t-sm opacity-60 hover:opacity-100 transition-opacity" style="height: 40%"></div>
+</div>
+</div>
+</div>
+<!-- Volume & Error Rate -->
+<div class="flex flex-col gap-lg">
+<div class="glass-card rounded-xl p-lg flex-1 min-h-[170px] flex flex-col gap-md">
+<h3 class="text-label-caps font-label-caps text-outline uppercase">Request Volume (last 24h)</h3>
+<div class="flex-1 bg-surface-container-low rounded-lg flex items-center justify-center border border-outline-variant">
+<div class="w-full h-16 bg-gradient-to-t from-secondary/10 to-transparent border-t border-secondary/30 mx-lg rounded-t-lg"></div>
+</div>
+</div>
+<div class="glass-card rounded-xl p-lg flex-1 min-h-[170px] flex flex-col gap-md">
+<h3 class="text-label-caps font-label-caps text-outline uppercase">Error Rate (%)</h3>
+<div class="flex-1 flex items-end gap-2 px-md py-sm bg-surface-container-low rounded-lg border border-outline-variant">
+<div class="flex-1 h-4 bg-error-container rounded-sm"></div>
+<div class="flex-1 h-8 bg-error-container rounded-sm"></div>
+<div class="flex-1 h-3 bg-error-container rounded-sm"></div>
+<div class="flex-1 h-12 bg-error rounded-sm"></div>
+<div class="flex-1 h-2 bg-error-container rounded-sm"></div>
+<div class="flex-1 h-5 bg-error-container rounded-sm"></div>
+<div class="flex-1 h-3 bg-error-container rounded-sm"></div>
+<div class="flex-1 h-4 bg-error-container rounded-sm"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Transactions Table -->
+<section class="glass-card rounded-xl overflow-hidden shadow-sm">
+<div class="px-lg py-md border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+<h3 class="text-headline-md font-headline-md text-[18px]">Recent Transactions</h3>
+<button class="text-secondary font-label-caps font-bold text-label-caps flex items-center gap-xs hover:underline transition-all">
+                    VIEW ALL <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface text-label-caps font-label-caps text-outline">
+<th class="px-lg py-md font-semibold">Timestamp</th>
+<th class="px-lg py-md font-semibold">Method</th>
+<th class="px-lg py-md font-semibold">Endpoint Path</th>
+<th class="px-lg py-md font-semibold">Status</th>
+<th class="px-lg py-md font-semibold text-right">Latency</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant text-body-sm font-body-sm">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md font-code-sm text-code-sm">2023-10-27 14:22:01</td>
+<td class="px-lg py-md"><span class="px-sm py-1 bg-surface-container-high rounded text-on-surface-variant font-label-caps text-[10px]">GET</span></td>
+<td class="px-lg py-md font-code-sm text-code-sm text-on-surface-variant">/customers/c_00129</td>
+<td class="px-lg py-md">
+<span class="flex items-center gap-xs text-success-emerald font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-success-emerald"></span> 200 OK
+                                </span>
+</td>
+<td class="px-lg py-md text-right font-code-sm text-code-sm">142ms</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md font-code-sm text-code-sm">2023-10-27 14:21:58</td>
+<td class="px-lg py-md"><span class="px-sm py-1 bg-secondary-container/20 text-secondary rounded font-label-caps text-[10px]">POST</span></td>
+<td class="px-lg py-md font-code-sm text-code-sm text-on-surface-variant">/customers/register</td>
+<td class="px-lg py-md">
+<span class="flex items-center gap-xs text-success-emerald font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-success-emerald"></span> 201 Created
+                                </span>
+</td>
+<td class="px-lg py-md text-right font-code-sm text-code-sm">285ms</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md font-code-sm text-code-sm">2023-10-27 14:21:45</td>
+<td class="px-lg py-md"><span class="px-sm py-1 bg-surface-container-high rounded text-on-surface-variant font-label-caps text-[10px]">GET</span></td>
+<td class="px-lg py-md font-code-sm text-code-sm text-on-surface-variant">/customers/search?q=Smith</td>
+<td class="px-lg py-md">
+<span class="flex items-center gap-xs text-error font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> 500 Error
+                                </span>
+</td>
+<td class="px-lg py-md text-right font-code-sm text-code-sm">1.2s</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md font-code-sm text-code-sm">2023-10-27 14:21:30</td>
+<td class="px-lg py-md"><span class="px-sm py-1 bg-tertiary-fixed text-on-tertiary-fixed rounded font-label-caps text-[10px]">PATCH</span></td>
+<td class="px-lg py-md font-code-sm text-code-sm text-on-surface-variant">/customers/c_00129/address</td>
+<td class="px-lg py-md">
+<span class="flex items-center gap-xs text-success-emerald font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-success-emerald"></span> 200 OK
+                                </span>
+</td>
+<td class="px-lg py-md text-right font-code-sm text-code-sm">198ms</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md font-code-sm text-code-sm">2023-10-27 14:21:12</td>
+<td class="px-lg py-md"><span class="px-sm py-1 bg-surface-container-high rounded text-on-surface-variant font-label-caps text-[10px]">GET</span></td>
+<td class="px-lg py-md font-code-sm text-code-sm text-on-surface-variant">/customers/c_00135</td>
+<td class="px-lg py-md">
+<span class="flex items-center gap-xs text-outline font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span> 404 Not Found
+                                </span>
+</td>
+<td class="px-lg py-md text-right font-code-sm text-code-sm">45ms</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</main>
+<script>
+    // Micro-interactions for cards
+    document.querySelectorAll('.glass-card').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.style.transform = 'translateY(-2px)';
+            card.style.transition = 'all 0.2s ease-out';
+            card.classList.add('shadow-md');
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'translateY(0px)';
+            card.classList.remove('shadow-md');
+        });
+    });
+</script>
+</body></html>
