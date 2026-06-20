@@ -2,9 +2,64 @@ import { AppShell } from "@/components/layout/app-shell";
 import { BarTrend, DistributionBars, DonutChart } from "@/components/ui/charts";
 import { MetricCard } from "@/components/ui/metric-card";
 import { MethodTag, StatusBadge } from "@/components/ui/status";
-import { dashboardData } from "./data";
 
-export function DashboardPage() {
+/**
+ * Dashboard page component.
+ * 
+ * Receives dashboard data from the parent route component and renders:
+ * - Top metrics (6 KPI cards)
+ * - System status board (monitored APIs grid)
+ * - Live activity feed (recent request logs table)
+ * - Alerts panel (system alerts with severity)
+ * - Success rate donut chart
+ * - Traffic distribution bars
+ * - Response trend chart
+ * 
+ * This component can be a Server Component (default) or Client Component
+ * if we add interactivity like refresh buttons or real-time updates.
+ */
+
+// Type definition for dashboard data structure
+type DashboardData = {
+  metrics: Array<{
+    label: string;
+    value: string;
+    footer: string;
+    accent?: "success" | "error" | "warning";
+  }>;
+  services: Array<{
+    name: string;
+    version: string;
+    latency: string;
+    status: "HEALTHY" | "WARNING" | "DOWN";
+  }>;
+  activity: Array<{
+    timestamp: string;
+    method: string;
+    endpoint: string;
+    status: string;
+    statusKind: "success" | "error";
+    responseTime: string;
+  }>;
+  alerts: Array<{
+    title: string;
+    body: string;
+    icon: string;
+    tone: "error" | "warning" | "info";
+  }>;
+  distribution: Array<{
+    label: string;
+    value: number;
+  }>;
+  trend: number[];
+  successRate: number;
+};
+
+type DashboardPageProps = {
+  data: DashboardData;
+};
+
+export function DashboardPage({ data }: DashboardPageProps) {
   return (
     <AppShell active="dashboard">
       <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-center">
@@ -26,7 +81,7 @@ export function DashboardPage() {
       </div>
 
       <section className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-        {dashboardData.metrics.map((metric) => (
+        {data.metrics.map((metric) => (
           <MetricCard
             accent={metric.accent}
             footer={metric.footer}
@@ -47,7 +102,7 @@ export function DashboardPage() {
               </button>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {dashboardData.services.map((service) => (
+              {data.services.map((service) => (
                 <div
                   className="flex flex-col gap-2 rounded border border-outline-variant bg-surface-bright p-4"
                   key={service.name}
@@ -107,7 +162,7 @@ export function DashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="font-mono text-sm">
-                  {dashboardData.activity.map((event) => (
+                  {data.activity.map((event) => (
                     <tr
                       className={`border-b border-outline-variant transition-colors hover:bg-surface-container-low ${
                         event.statusKind === "error" ? "bg-error-container/10" : ""
@@ -148,7 +203,7 @@ export function DashboardPage() {
               </span>
             </div>
             <div className="space-y-2">
-              {dashboardData.alerts.map((alert) => (
+              {data.alerts.map((alert) => (
                 <div
                   className={`flex gap-4 rounded border p-2 ${
                     alert.tone === "error"
@@ -178,19 +233,19 @@ export function DashboardPage() {
               <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-outline">
                 Success Rate
               </h3>
-              <DonutChart value="94%" />
+              <DonutChart value={`${data.successRate.toFixed(1)}%`} />
             </div>
             <div className="border-t border-outline-variant pt-6">
               <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-outline">
                 Traffic Distribution
               </h3>
-              <DistributionBars items={dashboardData.distribution} />
+              <DistributionBars items={data.distribution} />
             </div>
             <div className="border-t border-outline-variant pt-6">
               <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-outline">
                 Response Trend
               </h3>
-              <BarTrend values={dashboardData.trend} />
+              <BarTrend values={data.trend} />
               <div className="mt-1 flex justify-between font-mono text-[10px] text-outline">
                 <span>12:00 PM</span>
                 <span>NOW</span>

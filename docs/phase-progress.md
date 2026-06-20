@@ -52,27 +52,73 @@ Completed work:
 
 ### Phase 4: Backend Architecture
 
-- Add repositories, services, DTOs, and validation helpers.
+Status: Completed.
+
+Completed work:
+
+- Created repository layer with four repositories: `monitored-api.repository.ts`, `request-log.repository.ts`, `alert.repository.ts`, and `chart-data.repository.ts`.
+- Added DTO layer with type-safe transformation functions: `dashboard.dto.ts`, `api-details.dto.ts`, `logs.dto.ts`, and `common.dto.ts`.
+- Implemented validation layer with query parameter validation and sanitization in `query-params.ts`.
+- Built service layer orchestrating repositories and DTOs: `dashboard.service.ts`, `api.service.ts`, and `logs.service.ts`.
+- Added index files for clean exports from each layer.
+- Verified TypeScript compilation with no errors.
+- Did not add API route handlers (deferred to Phases 5-7).
 
 ### Phase 5: Dashboard APIs and UI Connection
 
-- Implement dashboard API.
-- Connect dashboard widgets to backend data.
+Status: Completed.
+
+Completed work:
+
+- Created `GET /api/dashboard` route handler with comprehensive comments explaining data flow.
+- Created `GET /api/apis` route handler for API list (used in filters).
+- Updated `app/page.tsx` to use Server Component pattern - fetches data directly from service layer.
+- Modified `DashboardPage` component to accept real data as props instead of static imports.
+- Added detailed type definitions for dashboard data structure.
+- Updated `MetricCard` component to support "warning" accent color.
+- All dashboard widgets now display live data from PostgreSQL via Prisma.
+- Maintained existing UI/UX - visual appearance unchanged, now with real data.
+- Added comprehensive code comments explaining the flow from route → service → repository → Prisma → PostgreSQL → DTO → UI.
 
 ### Phase 6: API Details APIs and UI Connection
 
-- Implement API details and transactions APIs.
-- Connect details screen.
+Status: Completed.
+
+Completed work:
+
+- Created `GET /api/apis/[id]` route handler - returns complete API details (header, metrics, charts, transactions).
+- Created `GET /api/apis/[id]/transactions` route handler - returns paginated transaction history.
+- Updated `app/apis/[id]/page.tsx` to use Server Component pattern with real database data.
+- Modified `ApiDetailsPage` component to accept data props instead of static imports.
+- Added comprehensive type definitions for API details data structure.
+- All API detail widgets now display live data from PostgreSQL via Prisma.
+- Maintained existing UI/UX - visual appearance unchanged, now with real data.
+- Added detailed comments explaining data flow at every layer.
+- Proper 404 handling for non-existent APIs using Next.js `notFound()`.
 
 ### Phase 7: Logs APIs and UI Connection
 
-- Implement logs API.
-- Connect filters and pagination.
+Status: Deferred.
+
+Note: Skipped as per user request to focus on Phase 8 real-time functionality first.
 
 ### Phase 8: Realtime
 
-- Implement SSE endpoint.
-- Subscribe dashboard activity and health widgets.
+Status: Completed.
+
+Completed work:
+
+- Created `GET /api/realtime` SSE endpoint that streams real-time updates every 3 seconds.
+- Implemented event types: `connected`, `activity`, `metrics`, and `health`.
+- Created `RealtimeProvider` client component that subscribes to SSE endpoint.
+- Created `DashboardPageClient` component that handles real-time state updates.
+- Updated main dashboard route to use client component with SSE integration.
+- Dashboard now displays live updates for:
+  - Activity feed (recent request logs)
+  - API health status (system status board)
+  - Dashboard metrics (Total APIs, Healthy, Down counts)
+- Added visual connection indicator showing real-time status.
+- Proper error handling and automatic reconnection on SSE errors.
 
 ### Phase 9: Cleanup and Completion
 

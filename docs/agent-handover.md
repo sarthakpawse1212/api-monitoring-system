@@ -66,9 +66,33 @@ Current real Next routes:
 - `/apis/[id]` from `app/apis/[id]/page.tsx`, rendering the Customer API details screen from typed static data.
 - `/logs` from `app/logs/page.tsx`, rendering the Developer Logs screen from typed static data.
 
+## Backend Architecture (Phase 4)
+
+Four-layer architecture implemented:
+
+### Repositories (`lib/repositories/`)
+- `monitored-api.repository.ts` — API/service data access
+- `request-log.repository.ts` — Logs, transactions, activity data access
+- `alert.repository.ts` — Alert data access
+- `chart-data.repository.ts` — Chart series data access
+
+### DTOs (`lib/dto/`)
+- `dashboard.dto.ts` — Dashboard response shaping
+- `api-details.dto.ts` — API details response shaping
+- `logs.dto.ts` — Logs response shaping
+- `common.dto.ts` — Shared utilities (formatting, relative time)
+
+### Validation (`lib/validation/`)
+- `query-params.ts` — Query parameter validation and sanitization
+
+### Services (`lib/services/`)
+- `dashboard.service.ts` — Dashboard business logic
+- `api.service.ts` — API details business logic
+- `logs.service.ts` — Logs business logic
+
 ## Implemented APIs
 
-None.
+None yet. API routes will be added in Phases 5-7.
 
 ## Database Schema
 
@@ -99,16 +123,15 @@ Seed script: `prisma/seed.ts`. Setup instructions: `README.md`.
 
 ## Completed Phases
 
-Phase 1 documentation, Phase 2 UI refactor, and Phase 3 database (Prisma schema, migrations, seed, `lib/prisma.ts`, README database setup).
+Phase 1 documentation, Phase 2 UI refactor, Phase 3 database (Prisma schema, migrations, seed, `lib/prisma.ts`, README database setup), and Phase 4 backend architecture (repositories, DTOs, validation, services).
 
 ## Pending Phases
 
-1. Add repositories, services, DTOs, and validation.
-2. Implement and connect dashboard API.
-3. Implement and connect API details APIs.
-4. Implement and connect logs API.
-5. Add simple realtime SSE support.
-6. Run cleanup and final verification.
+1. Implement and connect dashboard API (Phase 5).
+2. Implement and connect API details APIs (Phase 6).
+3. Implement and connect logs API (Phase 7).
+4. Add simple realtime SSE support (Phase 8).
+5. Run cleanup and final verification (Phase 9).
 
 ## Known Issues
 

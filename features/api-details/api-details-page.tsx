@@ -1,32 +1,79 @@
 import { AppShell } from "@/components/layout/app-shell";
 import { MetricCard } from "@/components/ui/metric-card";
 import { MethodTag, StatusBadge } from "@/components/ui/status";
-import { apiDetailsData } from "./data";
 
-export function ApiDetailsPage() {
+/**
+ * API Details page component.
+ * 
+ * Receives API details data from the parent route component and renders:
+ * - Header: API name, URL, status, last checked time
+ * - Metrics: 4 KPI cards (availability, response time, requests, errors)
+ * - Charts: Response trend, request volume, error rate
+ * - Transactions table: Recent API calls with method, endpoint, status, latency
+ * 
+ * This component displays real-time data from PostgreSQL via the service layer.
+ */
+
+// Type definitions for API details data structure
+type ApiDetailsData = {
+  header: {
+    id: string;
+    name: string;
+    url: string;
+    status: string;
+    lastChecked: string;
+  };
+  metrics: Array<{
+    label: string;
+    value: string;
+    footer: string;
+    accent: "success" | "secondary" | "muted" | "error";
+    icon: string;
+  }>;
+  responseTrend: number[];
+  errorRate: number[];
+  transactions: Array<{
+    timestamp: string;
+    method: string;
+    endpoint: string;
+    status: string;
+    statusKind: "success" | "error" | "neutral";
+    latency: string;
+  }>;
+};
+
+type ApiDetailsPageProps = {
+  data: ApiDetailsData;
+};
+
+export function ApiDetailsPage({ data }: ApiDetailsPageProps) {
   return (
     <AppShell active="apis">
       <section className="glass-card mb-6 flex flex-col justify-between gap-6 rounded-xl p-6 md:flex-row md:items-center">
         <div className="flex flex-col gap-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-2xl font-semibold">{apiDetailsData.name}</h1>
-            <StatusBadge label={apiDetailsData.status} pulse status="healthy" />
+            <h1 className="text-2xl font-semibold">{data.header.name}</h1>
+            <StatusBadge 
+              label={data.header.status} 
+              pulse={data.header.status === "Healthy"}
+              status={data.header.status === "Down" ? "down" : data.header.status === "Warning" ? "warning" : "healthy"} 
+            />
           </div>
           <div className="flex items-center gap-3 font-mono text-sm text-on-surface-variant">
             <span className="material-symbols-outlined text-[18px]">link</span>
-            <span>{apiDetailsData.url}</span>
+            <span>{data.header.url}</span>
           </div>
         </div>
         <div className="flex flex-col md:items-end">
           <p className="text-xs font-semibold uppercase tracking-wide text-outline">
             Last Checked
           </p>
-          <p className="font-semibold">{apiDetailsData.lastChecked}</p>
+          <p className="font-semibold">{data.header.lastChecked}</p>
         </div>
       </section>
 
       <section className="mb-6 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
-        {apiDetailsData.metrics.map((metric) => (
+        {data.metrics.map((metric) => (
           <MetricCard
             accent={metric.accent}
             footer={metric.footer}
@@ -53,8 +100,8 @@ export function ApiDetailsPage() {
           </div>
           <div className="flex flex-1 items-end overflow-hidden rounded-lg border border-outline-variant bg-surface-container-low px-4 py-2">
             <div className="flex h-48 w-full items-end gap-1">
-              {/* CSS-only chart placeholder retained from Stitch until real chart data lands. */}
-              {apiDetailsData.responseTrend.map((value, index) => (
+              {/* CSS-only chart showing real database data */}
+              {data.responseTrend.map((value, index) => (
                 <div
                   className="flex-1 rounded-t-sm bg-secondary opacity-60 transition-opacity hover:opacity-100"
                   key={`${value}-${index}`}
@@ -80,8 +127,8 @@ export function ApiDetailsPage() {
               Error Rate (%)
             </h2>
             <div className="flex flex-1 items-end gap-2 rounded-lg border border-outline-variant bg-surface-container-low px-4 py-2">
-              {/* CSS-only chart placeholder retained from Stitch until real chart data lands. */}
-              {apiDetailsData.errorRate.map((value, index) => (
+              {/* CSS-only chart showing real database data */}
+              {data.errorRate.map((value, index) => (
                 <div
                   className={`flex-1 rounded-sm ${
                     value > 40 ? "bg-error" : "bg-error-container"
@@ -115,7 +162,7 @@ export function ApiDetailsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-outline-variant text-sm">
-              {apiDetailsData.transactions.map((transaction) => (
+              {data.transactions.map((transaction) => (
                 <tr
                   className="transition-colors hover:bg-surface-container-low"
                   key={`${transaction.timestamp}-${transaction.endpoint}`}

@@ -10,7 +10,7 @@ export function MetricCard({
   label: string;
   value: string;
   footer: ReactNode;
-  accent?: "success" | "error" | "secondary" | "muted";
+  accent?: "success" | "error" | "secondary" | "muted" | "warning";
   icon?: string;
 }) {
   const accentClass =
@@ -18,11 +18,13 @@ export function MetricCard({
       ? "border-l-4 border-l-success-emerald"
       : accent === "error"
         ? "border-l-4 border-l-error"
-        : accent === "secondary"
-          ? "border-l-4 border-l-secondary"
-          : accent === "muted"
-            ? "border-l-4 border-l-on-primary-container"
-            : "";
+        : accent === "warning"
+          ? "border-l-4 border-l-warning-orange"
+          : accent === "secondary"
+            ? "border-l-4 border-l-secondary"
+            : accent === "muted"
+              ? "border-l-4 border-l-on-primary-container"
+              : "";
 
   return (
     <div className={`bento-card flex flex-col rounded-lg p-4 ${accentClass}`}>
