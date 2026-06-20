@@ -1,7 +1,5 @@
-import Image from "next/image";
+import { DashboardPage } from "@/features/dashboard/dashboard-page";
 
 export default function Home() {
-  return (
-    <h1>Sarthak</h1>
-  );
+  return <DashboardPage />;
 }

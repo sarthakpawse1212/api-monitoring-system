@@ -2,7 +2,7 @@
 
 ## Current Architecture
 
-This is a Next.js 16 App Router project with TypeScript and Tailwind CSS v4. The live application is still a minimal scaffold. Product screens exist only as Google Stitch generated static HTML and screenshots under `stitch_api_pulse_monitor_dashboard/`.
+This is a Next.js 16 App Router project with TypeScript and Tailwind CSS v4. Phase 2 has converted the Stitch product screens into real App Router pages using reusable React components and typed static data. The original Google Stitch generated static HTML and screenshots remain under `stitch_api_pulse_monitor_dashboard/` as the visual reference.
 
 No backend APIs, Prisma schema, database connection, repositories, services, DTOs, or validation modules exist yet.
 
@@ -11,10 +11,26 @@ No backend APIs, Prisma schema, database connection, repositories, services, DTO
 ```text
 monitoring-system/
   app/
+    apis/
+      [id]/
+        page.tsx
     favicon.ico
     globals.css
     layout.tsx
+    logs/
+      page.tsx
     page.tsx
+  components/
+    layout/
+      app-shell.tsx
+      mobile-nav.tsx
+      nav-items.ts
+      side-nav.tsx
+      top-nav.tsx
+    ui/
+      charts.tsx
+      metric-card.tsx
+      status.tsx
   docs/
     agent-handover.md
     api-contracts.md
@@ -28,6 +44,16 @@ monitoring-system/
     next.svg
     vercel.svg
     window.svg
+  features/
+    api-details/
+      api-details-page.tsx
+      data.ts
+    dashboard/
+      dashboard-page.tsx
+      data.ts
+    logs/
+      data.ts
+      logs-page.tsx
   stitch_api_pulse_monitor_dashboard/
     api_details_customer_api_v2/
       code.html
@@ -44,15 +70,15 @@ monitoring-system/
 
 ## Existing Pages
 
-Current real Next route:
+Current real Next routes:
 
-- `/` from `app/page.tsx`, currently placeholder UI.
+- `/` from `app/page.tsx`, rendering the dashboard overview from typed static data.
+- `/apis/[id]` from `app/apis/[id]/page.tsx`, rendering the Customer API details screen from typed static data.
+- `/logs` from `app/logs/page.tsx`, rendering the Developer Logs screen from typed static data.
 
 Stitch-generated pages not yet wired into Next:
 
-- Dashboard Overview from `overview_dashboard_v2/code.html`.
-- API Details from `api_details_customer_api_v2/code.html`.
-- Developer Logs from `api_logs_viewer_v2/code.html`.
+- The original generated HTML remains available for reference but is no longer the only representation of the UI.
 
 ## Implemented APIs
 
@@ -91,24 +117,30 @@ Phase 1 documentation has been prepared:
 - Planned API contracts documented.
 - Planned database concepts documented.
 
+Phase 2 UI refactor has been implemented:
+
+- Dashboard, API details, and logs screens are now real Next routes.
+- Shared layout/UI components were added under `components/`.
+- Feature-specific screen composition and static data were added under `features/`.
+- Static data is shaped to resemble future API DTOs.
+- No backend APIs, Prisma files, database schema, or realtime endpoint were added.
+
 ## Pending Phases
 
-1. Refactor Stitch UI into real Next routes and reusable components.
-2. Add Prisma/PostgreSQL schema and seed data.
-3. Add repositories, services, DTOs, and validation.
-4. Implement and connect dashboard API.
-5. Implement and connect API details APIs.
-6. Implement and connect logs API.
-7. Add simple realtime SSE support.
-8. Run cleanup and final verification.
+1. Add Prisma/PostgreSQL schema and seed data.
+2. Add repositories, services, DTOs, and validation.
+3. Implement and connect dashboard API.
+4. Implement and connect API details APIs.
+5. Implement and connect logs API.
+6. Add simple realtime SSE support.
+7. Run cleanup and final verification.
 
 ## Known Issues
 
 - `git status` is blocked by Git dubious ownership protection until the safe directory is configured.
-- The current root page does not represent the Stitch dashboard yet.
-- No `docs/` folder existed before Phase 1.
+- The UI is currently static; filters, pagination, refresh, and live feed controls are visual only until backend phases.
 - Some generated Stitch text includes encoding artifacts for bullets/arrows.
-- The generated UI uses Material Symbols and remote images/fonts that should be handled deliberately during UI conversion.
+- Material Symbols are loaded through a Google Fonts CSS import in `app/globals.css`.
 
 ## Setup Steps
 
@@ -128,4 +160,3 @@ DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
 ```
 
 Do not add auth, RBAC, multi-tenancy, notifications, Redis, Elasticsearch, MongoDB, or Kubernetes work unless the project scope changes.
-

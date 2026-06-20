@@ -4,7 +4,7 @@
 
 ### Phase 1: Analysis and Documentation
 
-Status: In progress during this documentation pass.
+Status: Completed.
 
 Completed work:
 
@@ -17,14 +17,23 @@ Completed work:
 - Documented planned database concepts without creating a schema.
 - Documented planned API contracts without creating route handlers.
 
-## Pending
-
 ### Phase 2: UI Refactor
 
-- Convert Stitch HTML into React/Next routes.
-- Extract reusable UI components.
-- Preserve visual design.
-- Keep data static and typed initially.
+Status: Completed.
+
+Completed work:
+
+- Converted the dashboard Stitch screen into the real `/` route with typed static data.
+- Added `/apis/[id]` for the Customer API details screen.
+- Added `/logs` for the Developer Logs screen.
+- Extracted reusable layout components for top nav, sidebar, mobile nav, and app shell.
+- Added reusable UI components for metric cards, status badges, method tags, and CSS-only chart primitives.
+- Added feature folders for dashboard, API details, and logs.
+- Updated global styles with Stitch design tokens, card styles, pulse animations, Material Symbols styling, and custom scrollbar styling.
+- Preserved generated Stitch files unchanged.
+- Did not add backend APIs, Prisma, database schema, or realtime code.
+
+## Pending
 
 ### Phase 3: Database
 
@@ -67,4 +76,3 @@ Completed work:
 - `git status` reports dubious ownership for this repository until `git config --global --add safe.directory D:/API-Dashboard/monitoring-system` is run by the appropriate user.
 - Stitch HTML contains some mojibake characters for bullets/arrows in text copied from generated files; conversion should normalize display text carefully.
 - The generated HTML references external Google font and avatar URLs; implementation should avoid relying on remote avatar assets unless intentionally kept.
-
