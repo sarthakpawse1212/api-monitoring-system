@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ApiStatus {
+  HEALTHY
+  WARNING
+  DOWN
+}
+
+enum AlertTone {
+  ERROR
+  WARNING
+  INFO
+}
+
+enum ChartKind {
+  DASHBOARD_RESPONSE_TREND
+  RESPONSE_TREND
+  ERROR_RATE
+  TRAFFIC_DISTRIBUTION
+}
+
+model MonitoredApi {
+  id                  String           @id @default(cuid())
+  slug                String           @unique
+  name                String
+  baseUrl             String
+  version             String
+  status              ApiStatus
+  avgLatencyMs        Int?
+  lastCheckedAt       DateTime
+  availabilityPercent Float?
+  requestsToday       Int?
+  errorCount          Int?
+  trafficSharePercent Float?
+  alerts              Alert[]
+  requestLogs         RequestLog[]
+  chartPoints         ChartDataPoint[]
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+}
+
+model RequestLog {
+  id          String        @id @default(cuid())
+  apiId       String?
+  api         MonitoredApi? @relation(fields: [apiId], references: [id], onDelete: SetNull)
+  occurredAt  DateTime
+  httpMethod  String?
+  path        String
+  endpoint    String?
+  message     String?
+  statusCode  Int
+  statusLabel String
+  latencyMs   Int
+  createdAt   DateTime      @default(now())
+
+  @@index([occurredAt])
+  @@index([apiId, occurredAt])
+  @@index([statusCode])
+}
+
+model Alert {
+  id        String        @id @default(cuid())
+  apiId     String?
+  api       MonitoredApi? @relation(fields: [apiId], references: [id], onDelete: SetNull)
+  title     String
+  body      String
+  icon      String
+  tone      AlertTone
+  createdAt DateTime      @default(now())
+}
+
+model ChartDataPoint {
+  id        String        @id @default(cuid())
+  apiId     String?
+  api       MonitoredApi? @relation(fields: [apiId], references: [id], onDelete: Cascade)
+  chartKind ChartKind
+  label     String?
+  value     Float
+  sequence  Int
+
+  @@index([chartKind, apiId, sequence])
+}

@@ -33,13 +33,22 @@ Completed work:
 - Preserved generated Stitch files unchanged.
 - Did not add backend APIs, Prisma, database schema, or realtime code.
 
-## Pending
-
 ### Phase 3: Database
 
-- Add Prisma.
-- Configure PostgreSQL.
-- Create schema and seed data.
+Status: Completed.
+
+Completed work:
+
+- Added Prisma ORM with PostgreSQL configuration.
+- Created `prisma/schema.prisma` with `MonitoredApi`, `RequestLog`, `Alert`, and `ChartDataPoint` models.
+- Added `prisma/seed.ts` with demo data mirroring the static UI (12 APIs, activity, transactions, logs, charts, alerts).
+- Added `lib/prisma.ts` Prisma client singleton.
+- Added `.env.example` with `DATABASE_URL` template.
+- Added database scripts to `package.json` (`db:migrate`, `db:seed`, `db:studio`, etc.).
+- Documented database setup and migration steps in `README.md`.
+- Did not add API routes, repositories, services, or UI-to-database wiring.
+
+## Pending
 
 ### Phase 4: Backend Architecture
 

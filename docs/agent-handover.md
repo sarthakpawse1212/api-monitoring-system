@@ -2,9 +2,9 @@
 
 ## Current Architecture
 
-This is a Next.js 16 App Router project with TypeScript and Tailwind CSS v4. Phase 2 has converted the Stitch product screens into real App Router pages using reusable React components and typed static data. The original Google Stitch generated static HTML and screenshots remain under `stitch_api_pulse_monitor_dashboard/` as the visual reference.
+This is a Next.js 16 App Router project with TypeScript and Tailwind CSS v4. Phase 2 converted the Stitch product screens into real App Router pages using reusable React components and typed static data. Phase 3 added Prisma with a PostgreSQL schema and seed data. The UI still reads from static data in `features/` until Phases 5–7 connect APIs.
 
-No backend APIs, Prisma schema, database connection, repositories, services, DTOs, or validation modules exist yet.
+No backend API routes, repositories, services, DTOs, or validation modules exist yet.
 
 ## Current Folder Structure
 
@@ -38,12 +38,6 @@ monitoring-system/
     database-design.md
     phase-progress.md
     project-overview.md
-  public/
-    file.svg
-    globe.svg
-    next.svg
-    vercel.svg
-    window.svg
   features/
     api-details/
       api-details-page.tsx
@@ -54,18 +48,14 @@ monitoring-system/
     logs/
       data.ts
       logs-page.tsx
+  lib/
+    prisma.ts
+  prisma/
+    migrations/
+    schema.prisma
+    seed.ts
+  public/
   stitch_api_pulse_monitor_dashboard/
-    api_details_customer_api_v2/
-      code.html
-      screen.png
-    api_logs_viewer_v2/
-      code.html
-      screen.png
-    api_pulse_monitor/
-      DESIGN.md
-    overview_dashboard_v2/
-      code.html
-      screen.png
 ```
 
 ## Existing Pages
@@ -76,19 +66,20 @@ Current real Next routes:
 - `/apis/[id]` from `app/apis/[id]/page.tsx`, rendering the Customer API details screen from typed static data.
 - `/logs` from `app/logs/page.tsx`, rendering the Developer Logs screen from typed static data.
 
-Stitch-generated pages not yet wired into Next:
-
-- The original generated HTML remains available for reference but is no longer the only representation of the UI.
-
 ## Implemented APIs
 
 None.
 
 ## Database Schema
 
-None.
+Prisma schema is in `prisma/schema.prisma` with four models:
 
-Prisma is not installed or configured yet. PostgreSQL schema work is pending Phase 3.
+- `MonitoredApi` — monitored services (12 seeded: 6 primary + 6 stub).
+- `RequestLog` — activity, transactions, and developer logs.
+- `Alert` — dashboard alerts.
+- `ChartDataPoint` — response trends, error rates, traffic distribution.
+
+Seed script: `prisma/seed.ts`. Setup instructions: `README.md`.
 
 ## Reusable Components Identified
 
@@ -108,32 +99,16 @@ Prisma is not installed or configured yet. PostgreSQL schema work is pending Pha
 
 ## Completed Phases
 
-Phase 1 documentation has been prepared:
-
-- Current screens documented.
-- Current routing documented.
-- Reusable components identified.
-- Architecture direction proposed.
-- Planned API contracts documented.
-- Planned database concepts documented.
-
-Phase 2 UI refactor has been implemented:
-
-- Dashboard, API details, and logs screens are now real Next routes.
-- Shared layout/UI components were added under `components/`.
-- Feature-specific screen composition and static data were added under `features/`.
-- Static data is shaped to resemble future API DTOs.
-- No backend APIs, Prisma files, database schema, or realtime endpoint were added.
+Phase 1 documentation, Phase 2 UI refactor, and Phase 3 database (Prisma schema, migrations, seed, `lib/prisma.ts`, README database setup).
 
 ## Pending Phases
 
-1. Add Prisma/PostgreSQL schema and seed data.
-2. Add repositories, services, DTOs, and validation.
-3. Implement and connect dashboard API.
-4. Implement and connect API details APIs.
-5. Implement and connect logs API.
-6. Add simple realtime SSE support.
-7. Run cleanup and final verification.
+1. Add repositories, services, DTOs, and validation.
+2. Implement and connect dashboard API.
+3. Implement and connect API details APIs.
+4. Implement and connect logs API.
+5. Add simple realtime SSE support.
+6. Run cleanup and final verification.
 
 ## Known Issues
 
@@ -144,8 +119,6 @@ Phase 2 UI refactor has been implemented:
 
 ## Setup Steps
 
-Current project commands:
-
 ```bash
 pnpm install
 pnpm dev
@@ -153,10 +126,14 @@ pnpm lint
 pnpm build
 ```
 
-Future database setup will require a PostgreSQL connection string in `.env` once Prisma is introduced:
+Database setup (after PostgreSQL is running):
 
 ```bash
-DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
+cp .env.example .env
+# edit DATABASE_URL
+pnpm db:generate
+pnpm db:migrate
+pnpm db:seed
 ```
 
 Do not add auth, RBAC, multi-tenancy, notifications, Redis, Elasticsearch, MongoDB, or Kubernetes work unless the project scope changes.

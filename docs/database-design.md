@@ -2,7 +2,7 @@
 
 ## Current State
 
-No database schema exists yet. Prisma is not installed or configured. There is no `prisma/` folder and no backend data layer.
+No database schema existed during Phase 1. Phase 3 introduced Prisma with PostgreSQL.
 
 ## Database Requirements
 
@@ -76,6 +76,15 @@ Developer Logs:
 ## Seed Data Guidance
 
 Seed data should mirror the Stitch screens so the first connected implementation visually matches the generated UI. Suggested seed services include Customer, Billing, Auth, Order, Notification, and Payment, with mixed healthy, warning, and down states.
+
+## Implemented Models (Phase 3)
+
+- `MonitoredApi` — slug, name, baseUrl, version, status, latency, rollups.
+- `RequestLog` — unified activity, transaction, and developer log events.
+- `Alert` — dashboard alert cards.
+- `ChartDataPoint` — trend, error rate, and traffic distribution series.
+
+Schema file: `prisma/schema.prisma`. Seed: `prisma/seed.ts`.
 
 ## Deferred Decisions
 
